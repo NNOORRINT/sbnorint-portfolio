@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Signal Scout engineering case study: a 210 mm ducted quadrotor that logs Wi-Fi RSSI against position to create coverage heatmaps." />
+    <title>Signal Scout — Wi-Fi Survey Drone // Project 05</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+  </head>
+  <body class="project-page drone-page">
+    <a class="skip-link" href="#content">Skip to project file</a>
+    <header id="top" class="drone-header">
+      <div class="drone-shell header-inner">
+        <a class="archive-mark" href="index.html" aria-label="Son Borey Norint home">
+          <span>SB NORINT</span><small>PROJECT ARCHIVE</small>
+        </a>
+        <nav class="drone-nav" aria-label="Project navigation">
+          <a href="index.html">HOME</a><a href="index.html#projects">PROJECT INDEX</a><a href="index.html#about">ABOUT</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="content" class="drone-shell drone-main">
+      <div class="file-strip" aria-label="File information">
+        <span>PROJECT FILE: SIGNAL SCOUT / DRN-05</span><span>REVISION: A</span><span>ACTIVE PROJECT</span>
+      </div>
+
+      <section class="drone-hero" aria-labelledby="project-title">
+        <div class="hero-copy">
+          <p class="terminal-label">[ SIGNAL SCOUT / ROBOTICS / NETWORKING / MAPPING ]</p>
+          <h1 id="project-title">Wi-Fi<br />Mapping Drone</h1>
+          <p class="hero-deck">A ~650 g four-rotor survey drone that pairs Wi-Fi signal readings with outdoor or indoor position data to produce a coverage heatmap.</p>
+          <p class="jump-links">JUMP TO: <a href="#overview">OVERVIEW</a> / <a href="#method">METHOD</a> / <a href="#structure">STRUCTURE</a> / <a href="#verification">VERIFICATION</a> / <a href="#drawings">DRAWINGS</a></p>
+        </div>
+        <figure class="hero-figure">
+          <div class="window-bar"><span>DRONE_RENDER_01.PNG</span><span aria-hidden="true">[_][□][×]</span></div>
+          <img src="assets/drone/drone-perspective-view.png" alt="Perspective CAD rendering of the compact four-rotor Wi-Fi mapping drone" width="1237" height="653" />
+          <figcaption>FIG. 01 — PERSPECTIVE ASSEMBLY VIEW</figcaption>
+        </figure>
+      </section>
+
+      <div class="project-columns">
+        <article class="project-record">
+          <section id="overview" class="record-section">
+            <h2><span>01.</span> Overview</h2>
+            <p class="lead-copy">Wi-Fi is invisible, which makes poor coverage difficult to diagnose. This project gives the network a physical survey tool: a small drone that can move through an environment and collect signal measurements from multiple locations.</p>
+            <p>The recorded values are plotted as a heatmap. Strong and weak zones become easy to compare, helping reveal dead spots and areas where the network may need improvement.</p>
+            <dl class="metric-grid" aria-label="Headline engineering numbers">
+              <div><dt>WHEELBASE</dt><dd>210.0 mm</dd></div>
+              <div><dt>ALL-UP MASS</dt><dd>649.3 g</dd></div>
+              <div><dt>PROPELLER</dt><dd>Ø90 mm</dd></div>
+              <div><dt>DUCT BORE / OD</dt><dd>Ø94 / Ø104</dd></div>
+              <div><dt>THRUST / WEIGHT</dt><dd>2.2–2.6</dd></div>
+              <div><dt>GROUND CLEARANCE</dt><dd>53.0 mm</dd></div>
+            </dl>
+          </section>
+          <section id="method" class="record-section">
+            <h2><span>02.</span> How it works</h2>
+            <p class="method-intro">Four ducted rotors lift the ~650 g airframe. The flight controller keeps it stable and, in survey mode, moves it slowly between waypoints while the payload records Wi-Fi strength.</p>
+            <ol class="workflow-sketch" aria-label="Scan, record, and visualize workflow">
+              <li>
+                <small>STEP 01</small>
+                <b>Scan</b>
+                <span>Fly a controlled path through the survey area.</span>
+              </li>
+              <li>
+                <small>STEP 02</small>
+                <b>Record</b>
+                <span>Pair each RSSI reading with position and time.</span>
+              </li>
+              <li>
+                <small>STEP 03</small>
+                <b>Visualize</b>
+                <span>Plot the microSD log as a coverage heatmap.</span>
+              </li>
+            </ol>
+
+            <div class="position-system" aria-labelledby="position-title">
+              <div class="system-heading">
+                <p class="operation-number">POSITION SYSTEM</p>
+                <h3 id="position-title">Two ways to know where it is</h3>
+              </div>
+              <div class="position-grid">
+                <article>
+                  <p class="position-tag">OUTDOORS</p>
+                  <h4>GPS</h4>
+                  <p>A 25 × 25 mm GPS module sits at the nose on a 42 mm pedestal, giving the flight controller position when the drone has a clear sky view.</p>
+                </article>
+                <article>
+                  <p class="position-tag">INDOORS</p>
+                  <h4>Optical flow + ToF</h4>
+                  <p>A downward optical-flow camera reads floor texture moving past to estimate velocity. A time-of-flight rangefinder measures height, replacing GPS where there is no sky view.</p>
+                </article>
+              </div>
+            </div>
+
+            <div class="payload-section" aria-labelledby="payload-title">
+              <p class="operation-number">THE PAYLOAD CHAIN</p>
+              <h3 id="payload-title">From radio signal to heatmap</h3>
+              <ol class="payload-chain">
+                <li><div><b>Omnidirectional antenna</b><p>A 60 mm non-conductive mast at the aft end picks up ambient Wi-Fi from every direction.</p></div></li>
+                <li><div><b>RG178 coax</b><p>The cable runs inside the hollow mast and carries the received radio signal down into the electronics pod.</p></div></li>
+                <li><div><b>Receiver board</b><p>The board measures RSSI for every beacon it hears. It never decodes network traffic; it only measures signal strength.</p></div></li>
+                <li><div><b>Position + signal merge</b><p>The pod pairs each RSSI value with the position reported by the flight controller—GPS outdoors or optical flow plus ToF indoors—and adds a timestamp.</p></div></li>
+                <li><div><b>microSD log</b><p>Each combined sample is written as one line to the card. After landing, those lines are plotted by location to create the heatmap.</p></div></li>
+              </ol>
+            </div>
+
+            <aside class="system-boundary">
+              <p class="operation-number">KEY DESIGN POINT</p>
+              <p>The receiver never knows position, and the flight controller never knows signal strength. The board inside the pod is the only place where those two data streams meet.</p>
+            </aside>
+          </section>
+
+          <section id="structure" class="record-section">
+            <h2><span>03.</span> Structure</h2>
+            <p class="method-intro">The airframe is a bottom-to-top sandwich built around one structural carbon plate.</p>
+            <ol class="structure-stack">
+              <li><b>Landing skids</b><p>Touch down first and hold the frame 53 mm above the ground, leaving 10 mm of clearance below the battery.</p></li>
+              <li><b>Battery tray</b><p>Hangs below the plate on slotted bolts. Sliding the tray forward or aft is the center-of-gravity trim adjustment.</p></li>
+              <li><b>FRAME_BOTTOM_PLATE</b><p>The 3 mm carbon plate is the real airframe. Motors, ducts, skids, battery tray, mast, and sensor mounts bolt directly to it with no structural joints.</p></li>
+              <li><b>FRAME_TOP_DECK</b><p>Six standoffs raise a 2 mm carbon deck, forming a bay for the flight controller and ESCs. A printed chassis shell covers the bay but carries no structural load.</p></li>
+              <li><b>Payload pod</b><p>Bolts to the same four standoffs as the deck. Two plates and grommets isolate it from arm vibration so the propellers do not disturb the antenna or electronics.</p></li>
+            </ol>
+
+            <div class="engineering-notes" aria-label="Additional design details">
+              <article>
+                <p class="operation-number">CONTACT PROTECTION</p>
+                <h3>Replaceable duct and bumper</h3>
+                <p>Each duct has a 2.4 mm shell, Ø94 mm bore, and Ø104 mm outside diameter. A TPU 95A bumper clips around the outboard 160° and stands 2.2 mm proud, creating a cheap replaceable fuse before an impact reaches the carbon arm or motor.</p>
+              </article>
+              <article>
+                <p class="operation-number">POWER + BALANCE</p>
+                <h3>Sliding battery tray</h3>
+                <p>The 26 mm tray travel trims the center of gravity for different packs. The 649.3 g design point uses a 4S 1100 mAh, 128 g battery; filling the complete 85 × 40 × 38 mm envelope with a ~215 g pack would raise the aircraft to about 736 g.</p>
+              </article>
+              <article>
+                <p class="operation-number">SERVICEABLE POD</p>
+                <h3>One removable payload</h3>
+                <p>The 78 × 55 × 30 mm pod provides a 73.2 × 45.2 × 25 mm cavity with USB-C access, a dedicated microSD slot, a status-LED window, and baffled vents that keep prop wash from blowing directly onto the board.</p>
+              </article>
+            </div>
+          </section>
+        </article>
+
+        <aside class="spec-panel" aria-labelledby="spec-title">
+          <div class="panel-title" id="spec-title">PROJECT DATA</div>
+          <dl>
+            <div><dt>MASS</dt><dd>649.3 g</dd></div>
+            <div><dt>FRAME</dt><dd>210 mm wheelbase</dd></div>
+            <div><dt>LIFT</dt><dd>Ø90 mm, 3-blade × 4</dd></div>
+            <div><dt>DUCT</dt><dd>Ø94 bore / Ø104 OD</dd></div>
+            <div><dt>POSITION</dt><dd>GPS / optical flow + ToF</dd></div>
+            <div><dt>SIGNAL</dt><dd>RSSI per beacon</dd></div>
+            <div><dt>STORAGE</dt><dd>Timestamped microSD log</dd></div>
+            <div><dt>OUTPUT</dt><dd>Wi-Fi coverage heatmap</dd></div>
+            <div><dt>STATUS</dt><dd>ONGOING</dd></div>
+          </dl>
+        </aside>
+      </div>
+
+      <section id="verification" class="verification-section" aria-labelledby="verification-title">
+        <div class="section-banner">
+          <div><p class="terminal-label">[ SOLID-MODEL CHECKS ]</p><h2 id="verification-title">Verified engineering</h2></div>
+          <p>REV A / REQUIREMENTS CHECK</p>
+        </div>
+
+        <div class="verification-table-wrap" tabindex="0" aria-label="Scrollable engineering verification table">
+          <table class="verification-table">
+            <thead><tr><th scope="col">CHECK</th><th scope="col">RESULT</th><th scope="col">REQUIREMENT</th><th scope="col">STATUS</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">All-up mass</th><td>649.3 g</td><td>&lt; 650 g</td><td>MET / NO MARGIN</td></tr>
+              <tr><th scope="row">Center of gravity</th><td>x −2.98, y +0.03 mm</td><td>Within 5 mm</td><td>MET</td></tr>
+              <tr><th scope="row">Prop-to-duct clearance</th><td>2.00 mm radial</td><td>≥ 2.00 mm</td><td>MET / AT LIMIT</td></tr>
+              <tr><th scope="row">Ground clearance</th><td>53.0 mm under frame</td><td>≥ 35 mm</td><td>MET</td></tr>
+              <tr><th scope="row">Battery protection</th><td>10.0 mm above skid plane</td><td>Pack protected</td><td>MET</td></tr>
+              <tr><th scope="row">Payload including mounts</th><td>114.3 g</td><td>&lt; 120 g</td><td>MET</td></tr>
+              <tr><th scope="row">Electronics cavity</th><td>73.2 × 45.2 × 25.0 mm</td><td>≥ 70 × 34 × 15 mm</td><td>MET</td></tr>
+              <tr><th scope="row">Solid-body interference</th><td>0 overlaps</td><td>No intersections</td><td>CLEAR</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tradeoff-grid">
+          <article><p class="operation-number">MASS TRADEOFF</p><p>The structure accepts the larger battery envelope, but the sub-650 g target requires the lighter 4S 1100 mAh design-point pack.</p></article>
+          <article><p class="operation-number">ANTENNA OFFSET</p><p>The mast sits 53 mm aft of center to avoid the pod lid and propeller sweeps. Its fixed offset is entered once in the survey software.</p></article>
+          <article><p class="operation-number">CLEARANCE LIMIT</p><p>The Ø90 propeller inside the Ø94 duct leaves exactly 2.00 mm radial clearance. A stiff three-blade propeller is required.</p></article>
+        </div>
+
+      </section>
+
+      <section id="drawings" class="drawing-section" aria-labelledby="drawings-title">
+        <div class="section-banner">
+          <div><p class="terminal-label">[ DESIGN DOCUMENTATION ]</p><h2 id="drawings-title">Assembly drawings</h2></div>
+          <p>04 FILES / PNG FORMAT</p>
+        </div>
+        <div class="drawing-grid">
+          <figure class="drawing-card drawing-card-wide">
+            <div class="window-bar"><span>VIEW_A / TOP</span><span>001</span></div>
+            <a href="assets/drone/drone-top-view.png" target="_blank" rel="noreferrer"><img src="assets/drone/drone-top-view.png" alt="Top-view CAD drawing of the drone" width="916" height="676" loading="lazy" /></a>
+            <figcaption>FIG. 02 — TOP VIEW <span>CLICK IMAGE TO OPEN</span></figcaption>
+          </figure>
+          <figure class="drawing-card">
+            <div class="window-bar"><span>VIEW_B / FRONT</span><span>002</span></div>
+            <a href="assets/drone/drone-front-view.png" target="_blank" rel="noreferrer"><img src="assets/drone/drone-front-view.png" alt="Front-view CAD drawing of the drone" width="1187" height="677" loading="lazy" /></a>
+            <figcaption>FIG. 03 — FRONT ELEVATION <span>CLICK IMAGE TO OPEN</span></figcaption>
+          </figure>
+          <figure class="drawing-card">
+            <div class="window-bar"><span>VIEW_C / COMPONENT</span><span>003</span></div>
+            <a href="assets/drone/drone-component-view.png" target="_blank" rel="noreferrer"><img src="assets/drone/drone-component-view.png" alt="Close component view of the drone body and electronics" width="1245" height="720" loading="lazy" /></a>
+            <figcaption>FIG. 04 — COMPONENT DETAIL <span>CLICK IMAGE TO OPEN</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <nav class="project-switcher" aria-label="Next project"><a href="index.html#projects">← PROJECT INDEX</a><a href="emath.html">NEXT FILE: E-MATH →</a></nav>
+    </main>
+
+    <footer class="drone-footer"><div class="drone-shell"><p>© <span id="year">2026</span> SON BOREY NORINT</p><p><a href="#top">BACK TO TOP ↑</a></p></div></footer>
+  </body>
+</html>

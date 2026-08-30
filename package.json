@@ -1,0 +1,13 @@
+{
+  "name": "sbnorint-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local live preview for the portfolio website",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 8080 --open /index.html",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "vite": "^7.1.3"
+  }
+}
