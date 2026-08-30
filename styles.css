@@ -799,6 +799,58 @@ footer div { display: flex; gap: 24px; }
 .engineering-notes h3 { margin: 0; font-size: 16px; line-height: 1.25; letter-spacing: -0.02em; }
 .engineering-notes article > p:last-child { margin: 0; color: var(--drone-muted); font-size: 13px; line-height: 1.6; }
 
+.performance-strip,
+.service-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 24px 0 28px;
+  border-top: 1px solid var(--drone-rule);
+  border-left: 1px solid var(--drone-rule);
+}
+.performance-strip div,
+.service-strip div {
+  padding: 13px 11px;
+  border-right: 1px solid var(--drone-rule);
+  border-bottom: 1px solid var(--drone-rule);
+  background: rgba(247, 246, 242, 0.68);
+}
+.performance-strip dt,
+.service-strip dt {
+  color: var(--drone-accent);
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.performance-strip dd,
+.service-strip dd { margin: 5px 0 0; font-size: 12px; font-weight: 700; line-height: 1.35; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 24px;
+  border-top: 1px solid var(--drone-rule);
+  border-left: 1px solid var(--drone-rule);
+}
+.detail-grid article { padding: 18px; border-right: 1px solid var(--drone-rule); border-bottom: 1px solid var(--drone-rule); }
+.detail-grid h3 { margin: 0 0 10px; font-size: 17px; line-height: 1.25; letter-spacing: -0.025em; }
+.detail-grid article > p:last-child { margin: 0; color: var(--drone-muted); font-size: 12px; line-height: 1.65; }
+
+.route-list { margin: 24px 0 28px; border-top: 1px solid var(--drone-ink); }
+.route-list div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 20px; padding: 15px 0; border-bottom: 1px dotted var(--drone-rule); }
+.route-list dt { font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; }
+.route-list dd { margin: 0; color: var(--drone-muted); font-size: 13px; line-height: 1.6; }
+
+.record-format { margin-top: 26px; padding: 18px; border: 3px double var(--drone-ink); background: #e3e8eb; }
+.record-format code { display: block; overflow-x: auto; margin: 4px 0 14px; padding: 11px 0; border-top: 1px dotted var(--drone-rule); border-bottom: 1px dotted var(--drone-rule); color: var(--drone-blue); font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.record-format > p:last-child { margin: 0; color: var(--drone-muted); font-size: 12px; line-height: 1.6; }
+
+.build-list { counter-reset: build-step; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--drone-ink); list-style: none; }
+.build-list li { counter-increment: build-step; display: grid; grid-template-columns: 44px 145px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px dotted var(--drone-rule); }
+.build-list li::before { content: counter(build-step, decimal-leading-zero); color: var(--drone-accent); font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 700; }
+.build-list b { font-size: 13px; line-height: 1.45; }
+.build-list p { margin: 0; color: var(--drone-muted); font-size: 12px; line-height: 1.6; }
+
 .spec-panel { align-self: start; border: 1px solid var(--drone-rule); background: var(--drone-panel); box-shadow: 5px 5px 0 #c8c7c1; }
 .panel-title { padding: 7px 10px; background: var(--drone-blue); color: #fff; font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-weight: 700; letter-spacing: 0.08em; }
 .spec-panel dl { margin: 0; padding: 8px 12px; }
@@ -878,6 +930,11 @@ footer div { display: flex; gap: 24px; }
   .structure-stack li { grid-template-columns: 1fr; gap: 6px; }
   .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .engineering-notes article { grid-template-columns: 1fr; gap: 6px; }
+  .performance-strip, .service-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .detail-grid { grid-template-columns: 1fr; }
+  .route-list div { grid-template-columns: 1fr; gap: 5px; }
+  .build-list li { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; }
+  .build-list li p { grid-column: 2; }
   .tradeoff-grid { grid-template-columns: 1fr; }
 }
 

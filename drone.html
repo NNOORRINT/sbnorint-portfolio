@@ -31,7 +31,7 @@
           <p class="terminal-label">[ SIGNAL SCOUT / ROBOTICS / NETWORKING / MAPPING ]</p>
           <h1 id="project-title">Wi-Fi<br />Mapping Drone</h1>
           <p class="hero-deck">A ~650 g four-rotor survey drone that pairs Wi-Fi signal readings with outdoor or indoor position data to produce a coverage heatmap.</p>
-          <p class="jump-links">JUMP TO: <a href="#overview">OVERVIEW</a> / <a href="#method">METHOD</a> / <a href="#structure">STRUCTURE</a> / <a href="#verification">VERIFICATION</a> / <a href="#drawings">DRAWINGS</a></p>
+          <p class="jump-links">JUMP TO: <a href="#overview">OVERVIEW</a> / <a href="#method">METHOD</a> / <a href="#structure">STRUCTURE</a> / <a href="#propulsion">FLIGHT HARDWARE</a> / <a href="#wiring">WIRING</a> / <a href="#assembly">ASSEMBLY</a> / <a href="#verification">CHECKS</a> / <a href="#drawings">DRAWINGS</a></p>
         </div>
         <figure class="hero-figure">
           <div class="window-bar"><span>DRONE_RENDER_01.PNG</span><span aria-hidden="true">[_][□][×]</span></div>
@@ -142,17 +142,101 @@
               </article>
             </div>
           </section>
+
+          <section id="propulsion" class="record-section">
+            <h2><span>04.</span> Lift and flight hardware</h2>
+            <p class="method-intro">The aircraft is sized for slow survey flight, stable hovering, and useful control authority rather than speed. Four 1507/1806-class motors driving 90 mm three-blade propellers provide an estimated 2.2-2.6 thrust-to-weight ratio at the 649.3 g design mass.</p>
+
+            <dl class="performance-strip" aria-label="Propulsion figures">
+              <div><dt>PER ROTOR</dt><dd>350-420 gf</dd></div>
+              <div><dt>TOTAL THRUST</dt><dd>1,400-1,680 gf</dd></div>
+              <div><dt>BLADE BAND</dt><dd>z 16-27 mm</dd></div>
+              <div><dt>DUCT GAP</dt><dd>44.49 mm</dd></div>
+            </dl>
+
+            <div class="detail-grid">
+              <article>
+                <p class="operation-number">MOTOR PLATFORM</p>
+                <h3>One plate, two bolt patterns</h3>
+                <p>Each motor sits on a 28 mm diameter arm pad. The lower carbon plate accepts both 16 &times; 16 mm and 19 &times; 19 mm M3 patterns, allowing a 1507/1806 motor or a larger 2204/2205 motor without cutting a new frame.</p>
+              </article>
+              <article>
+                <p class="operation-number">ELECTRONICS BAY</p>
+                <h3>Flight stack on grommets</h3>
+                <p>The 19 mm-high center bay accepts 30.5 &times; 30.5 mm and 20 &times; 20 mm flight-controller patterns. The controller and four-in-one ESC sit on rubber grommets between the 3 mm lower plate and 2 mm upper deck.</p>
+              </article>
+              <article>
+                <p class="operation-number">IMPACT LOAD PATH</p>
+                <h3>A replaceable mechanical fuse</h3>
+                <p>During a wall strike, the TPU bumper compresses first, the printed duct ring flexes second, and the four-bolt saddle carries what remains. The inexpensive duct is intended to fail before the carbon arm or motor bell.</p>
+              </article>
+              <article>
+                <p class="operation-number">CLEARANCE LIMIT</p>
+                <h3>Exactly 2.00 mm radial</h3>
+                <p>A 94 mm duct bore around a 90 mm propeller leaves no spare margin beyond the 2 mm requirement. A stiff three-blade propeller is required, and tip clearance must be checked again after a hard landing.</p>
+              </article>
+            </div>
+          </section>
+
+          <section id="wiring" class="record-section">
+            <h2><span>05.</span> Wiring and data path</h2>
+            <p class="method-intro">Cable paths are built into the model so power wiring, navigation sensors, and the radio measurement chain stay separated and remain serviceable.</p>
+
+            <dl class="route-list">
+              <div><dt>MOTOR PHASES</dt><dd>Drop through an 8 &times; 4 mm slot beside each motor pad, run under the carbon arm in printed clips, then enter the ESC bay through a 7 mm grommeted port.</dd></div>
+              <div><dt>BATTERY LEAD</dt><dd>Runs aft through a 10 &times; 12 mm chassis opening to the XT30 connector, with its service loop held under the aft spine.</dd></div>
+              <div><dt>ANTENNA COAX</dt><dd>RG178 travels down the hollow mast, through a 2 mm strain-relief channel and service-loop pocket, then enters the pod at x = -34 mm on the side opposite the USB-C opening.</dd></div>
+              <div><dt>GPS</dt><dd>The module cable runs inside the hollow nose pedestal and passes through the upper deck slot at x = +34 mm.</dd></div>
+              <div><dt>FLOW + ToF</dt><dd>The two downward sensors share a loom along the nose-carrier webs and enter through the forward deck slot.</dd></div>
+            </dl>
+
+            <div class="record-format" aria-label="Conceptual structure of one logged measurement">
+              <p class="operation-number">ONE LOGGED SAMPLE</p>
+              <code>TIME | BEACON_ID | RSSI_DBM | X | Y | Z | POSITION_SOURCE</code>
+              <p>This is the information joined inside the payload pod: one signal-strength reading, one reported position, and one timestamp. The microSD file is converted into a heatmap only after landing.</p>
+            </div>
+          </section>
+
+          <section id="assembly" class="record-section">
+            <h2><span>06.</span> Build and service sequence</h2>
+            <p class="method-intro">The assembly order keeps every fastener accessible and lets the ducts, skids, battery tray, and payload pod be replaced independently.</p>
+
+            <ol class="build-list">
+              <li><b>Prepare the carbon</b><p>Cut the 3 mm lower plate and 2 mm upper deck from the DXF profiles. Deburr, seal every edge, and add a 0.3 mm chamfer to both faces of each hole.</p></li>
+              <li><b>Install inserts</b><p>Fit 16 M3 heat-set inserts in the four duct saddles, eight M3 inserts in the flight-controller bosses, and 12 M2.5 inserts in the payload pod.</p></li>
+              <li><b>Mount motors</b><p>Fasten each motor from below with four M3 &times; 8 screws and route the phase wires before the ducts close access around the arms.</p></li>
+              <li><b>Clamp ducts</b><p>Place each saddle above its arm, the clamp below, and drive four M3 &times; 16 screws upward. Snap the TPU bumper into the outer flange groove.</p></li>
+              <li><b>Add landing gear</b><p>Fasten each skid leg to the arm with two M3 &times; 12 screws and nyloc nuts. Each skid remains independently replaceable.</p></li>
+              <li><b>Build the center bay</b><p>Set the printed chassis shell over the plate, add six 19 mm standoffs, install the ESC and flight controller on grommets, then fit the upper deck.</p></li>
+              <li><b>Route the antenna</b><p>Feed the RG178 through the mast before bolting its base to the aft spine, then close the strain-relief clamp around the cable.</p></li>
+              <li><b>Fit navigation sensors</b><p>Install the GPS pedestal above the nose and the optical-flow plus downward-ToF carrier below the forward spine.</p></li>
+              <li><b>Close the payload</b><p>Install the receiver, regulator, and microSD module in the pod. Bolt the pod to four deck standoffs and attach its lid last.</p></li>
+              <li><b>Trim the balance</b><p>Hang the battery tray below the frame, fit a live pack, slide the tray within its 26 mm range, and confirm the center of gravity on both arm axes.</p></li>
+            </ol>
+
+            <dl class="service-strip" aria-label="Service access summary">
+              <div><dt>DUCT CHANGE</dt><dd>About 2 minutes</dd></div>
+              <div><dt>POD REMOVAL</dt><dd>4 &times; M3</dd></div>
+              <div><dt>LID ACCESS</dt><dd>4 &times; M2.5</dd></div>
+              <div><dt>TRAY ADJUSTMENT</dt><dd>Loosen 4 &times; M3</dd></div>
+            </dl>
+          </section>
         </article>
 
         <aside class="spec-panel" aria-labelledby="spec-title">
           <div class="panel-title" id="spec-title">PROJECT DATA</div>
           <dl>
             <div><dt>MASS</dt><dd>649.3 g</dd></div>
+            <div><dt>DRY MASS</dt><dd>521.3 g without pack</dd></div>
             <div><dt>FRAME</dt><dd>210 mm wheelbase</dd></div>
             <div><dt>LIFT</dt><dd>Ø90 mm, 3-blade × 4</dd></div>
             <div><dt>DUCT</dt><dd>Ø94 bore / Ø104 OD</dd></div>
+            <div><dt>MOTOR CLASS</dt><dd>1507 / 1806, 4S</dd></div>
+            <div><dt>BATTERY</dt><dd>4S 1100 mAh / 128 g</dd></div>
+            <div><dt>TRAY TRAVEL</dt><dd>26 mm CG adjustment</dd></div>
             <div><dt>POSITION</dt><dd>GPS / optical flow + ToF</dd></div>
             <div><dt>SIGNAL</dt><dd>RSSI per beacon</dd></div>
+            <div><dt>PAYLOAD</dt><dd>49.0 g electronics / 114.3 g mounted</dd></div>
             <div><dt>STORAGE</dt><dd>Timestamped microSD log</dd></div>
             <div><dt>OUTPUT</dt><dd>Wi-Fi coverage heatmap</dd></div>
             <div><dt>STATUS</dt><dd>ONGOING</dd></div>
@@ -173,9 +257,14 @@
               <tr><th scope="row">All-up mass</th><td>649.3 g</td><td>&lt; 650 g</td><td>MET / NO MARGIN</td></tr>
               <tr><th scope="row">Center of gravity</th><td>x −2.98, y +0.03 mm</td><td>Within 5 mm</td><td>MET</td></tr>
               <tr><th scope="row">Prop-to-duct clearance</th><td>2.00 mm radial</td><td>≥ 2.00 mm</td><td>MET / AT LIMIT</td></tr>
+              <tr><th scope="row">Adjacent duct gap</th><td>44.49 mm</td><td>No interference</td><td>CLEAR</td></tr>
+              <tr><th scope="row">Downward sensor field</th><td>0 mm&sup3; obstruction</td><td>Clear at full-forward trim</td><td>CLEAR</td></tr>
               <tr><th scope="row">Ground clearance</th><td>53.0 mm under frame</td><td>≥ 35 mm</td><td>MET</td></tr>
               <tr><th scope="row">Battery protection</th><td>10.0 mm above skid plane</td><td>Pack protected</td><td>MET</td></tr>
               <tr><th scope="row">Payload including mounts</th><td>114.3 g</td><td>&lt; 120 g</td><td>MET</td></tr>
+              <tr><th scope="row">Antenna to propeller disc</th><td>39.8 mm minimum</td><td>No swept-volume overlap</td><td>CLEAR</td></tr>
+              <tr><th scope="row">Antenna to ESC stack</th><td>47.8 mm</td><td>Separated from switching electronics</td><td>CLEAR</td></tr>
+              <tr><th scope="row">Battery tray travel</th><td>26 mm</td><td>≥ 25 mm</td><td>MET</td></tr>
               <tr><th scope="row">Electronics cavity</th><td>73.2 × 45.2 × 25.0 mm</td><td>≥ 70 × 34 × 15 mm</td><td>MET</td></tr>
               <tr><th scope="row">Solid-body interference</th><td>0 overlaps</td><td>No intersections</td><td>CLEAR</td></tr>
             </tbody>
@@ -193,7 +282,7 @@
       <section id="drawings" class="drawing-section" aria-labelledby="drawings-title">
         <div class="section-banner">
           <div><p class="terminal-label">[ DESIGN DOCUMENTATION ]</p><h2 id="drawings-title">Assembly drawings</h2></div>
-          <p>04 FILES / PNG FORMAT</p>
+          <p>03 FILES / PNG FORMAT</p>
         </div>
         <div class="drawing-grid">
           <figure class="drawing-card drawing-card-wide">
