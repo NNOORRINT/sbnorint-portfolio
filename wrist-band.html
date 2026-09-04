@@ -3,33 +3,214 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Sound-detecting wrist band project by Son Borey Norint." />
-    <title>Wrist Band — Son Borey Norint</title>
+    <meta name="description" content="Sense Clip engineering case study: a CAD-validated prototype wristband that recognizes important environmental sounds and encodes them as distinct vibration rhythms." />
+    <title>Sense Clip — Assistive Sound Wristband // Project 04</title>
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="script.js"></script>
   </head>
-  <body class="project-page archive-page">
-    <a class="skip-link" href="#top">Skip to main content</a>
-    <header class="site-header">
-      <a class="name" href="index.html">Son Borey Norint</a>
-      <nav aria-label="Project navigation"><a href="index.html#projects">All projects</a><a href="index.html#about">About</a></nav>
+  <body class="project-page drone-page wristband-page">
+    <a class="skip-link" href="#content">Skip to project file</a>
+    <header id="top" class="drone-header">
+      <div class="drone-shell header-inner">
+        <a class="archive-mark" href="index.html" aria-label="Son Borey Norint home"><span>SB NORINT</span><small>PROJECT ARCHIVE</small></a>
+        <nav class="drone-nav" aria-label="Project navigation"><a href="index.html">HOME</a><a href="index.html#projects">PROJECT INDEX</a><a href="index.html#about">ABOUT</a></nav>
+      </div>
     </header>
-    <main id="top" class="detail-page">
-      <section class="project-hero">
-        <div><p class="label">Project 04 / Sound · Data · Wearable</p><h1>Wrist band</h1></div>
-        <p class="project-summary">A wearable safety device that detects nearby vehicle and alarm sounds, then converts alerts into vibration.</p>
+
+    <main id="content" class="drone-shell drone-main">
+      <div class="file-strip" aria-label="File information"><span>PROJECT FILE: SENSE CLIP / WBD-04</span><span>REVISION: B</span><span>PROTOTYPE / IN DEVELOPMENT</span></div>
+
+      <section class="drone-hero" aria-labelledby="project-title">
+        <div class="hero-copy">
+          <p class="terminal-label">[ SENSE CLIP / ACCESSIBILITY / EMBEDDED AUDIO / HAPTICS ]</p>
+          <h1 id="project-title">Sound-aware<br />wristband</h1>
+          <p class="hero-deck">A wrist-worn assistive device designed to recognize important environmental sounds and turn each one into a distinct vibration rhythm—without recording audio or relying on a phone.</p>
+          <div class="prototype-status" aria-label="Prototype status"><span>STATUS</span><strong>CAD-VALIDATED PROTOTYPE</strong><small>Physical build and real-world testing still required</small></div>
+          <p class="jump-links">JUMP TO: <a href="#overview">OVERVIEW</a> / <a href="#method">METHOD</a> / <a href="#vocabulary">ALERTS</a> / <a href="#construction">CONSTRUCTION</a> / <a href="#electronics">ELECTRONICS</a> / <a href="#verification">CHECKS</a> / <a href="#video">VIDEO</a></p>
+        </div>
+        <figure class="hero-figure">
+          <div class="window-bar"><span>SENSE_CLIP_REV_B / ASSEMBLY</span><span aria-hidden="true">[_][□][×]</span></div>
+          <img src="assets/wristband/sense-clip-top-assembly.png" alt="CAD view of the Sense Clip wristband enclosure with internal components visible beneath a transparent top" width="1103" height="606" />
+          <figcaption>FIG. 01 — REV B INTERNAL ASSEMBLY VIEW</figcaption>
+        </figure>
       </section>
-      <section class="project-facts" aria-label="Project details">
-        <div><p class="label">Field</p><p>Accessibility and hardware</p></div>
-        <div><p class="label">Event</p><p>AI in Motion 2026</p></div>
-        <div><p class="label">Status</p><p>Ongoing</p></div>
+
+      <div class="project-columns">
+        <article class="project-record">
+          <section id="overview" class="record-section">
+            <h2><span>01.</span> Overview</h2>
+            <p class="lead-copy">Sense Clip is designed for deaf and hard-of-hearing wearers who can miss the one-off sounds that help people stay oriented: a knock, a name being called, a car horn, an alarm, or a siren.</p>
+            <p>The device listens through its own microphone, classifies the type of sound locally, then plays a matching vibration rhythm and LED colour. It performs sound-event recognition with haptic encoding—it does not transcribe speech, translate language, or reveal what anyone said.</p>
+            <dl class="metric-grid" aria-label="Headline engineering numbers">
+              <div><dt>ENCLOSURE</dt><dd>53 × 33 × 15.4 mm</dd></div><div><dt>LUG TO LUG</dt><dd>61 mm</dd></div><div><dt>STRAP</dt><dd>Standard 20 mm</dd></div>
+              <div><dt>PRINTED MASS</dt><dd>~26.9 g</dd></div><div><dt>EST. PARTS COST</dt><dd>~$19–$35</dd></div><div><dt>ALERT CLASSES</dt><dd>6 rhythms</dd></div>
+            </dl>
+            <aside class="system-boundary"><p class="operation-number">DESIGN PRINCIPLE</p><p>No part of the interface depends on hearing. Every action receives a visible LED acknowledgement, and the important actions also receive a felt response from the motor.</p></aside>
+          </section>
+
+          <section id="method" class="record-section">
+            <h2><span>02.</span> How it works</h2>
+            <p class="method-intro">The complete path—from sound in the room to a pattern on the wrist—runs locally on the microcontroller. No phone, network connection, or cloud service is part of the intended operation.</p>
+            <ol class="workflow-sketch" aria-label="Listen, recognize, and signal workflow">
+              <li><small>STEP 01</small><b>Listen</b><span>The digital microphone continuously samples the acoustic environment at 16 kHz.</span></li>
+              <li><small>STEP 02</small><b>Recognize</b><span>Firmware segments an event and compares its level, duration, pitch, texture, and timing.</span></li>
+              <li><small>STEP 03</small><b>Signal</b><span>The matching rhythm is queued; the motor vibrates and the LED shows the same class colour.</span></li>
+            </ol>
+            <div class="payload-section" aria-labelledby="pipeline-title">
+              <p class="operation-number">THE SIGNAL PIPELINE</p><h3 id="pipeline-title">From audio frame to haptic alert</h3>
+              <ol class="payload-chain">
+                <li><div><b>Capture</b><p>Digital I²S audio enters the microcontroller at 16 kHz, avoiding an analogue microphone trace beside the motor drive line.</p></div></li>
+                <li><div><b>Frame</b><p>Every 10 ms, the firmware applies a Hann window to 256 samples and runs a 256-point FFT.</p></div></li>
+                <li><div><b>Track the room</b><p>An adaptive noise floor follows changing ambience. An event opens at 10 dB above the floor and closes after 320 ms below floor + 5 dB.</p></div></li>
+                <li><div><b>Extract features</b><p>Level, duration, spectral peak, pitch movement, flatness, onset count, and onset spacing describe the sound in measurable terms.</p></div></li>
+                <li><div><b>Classify</b><p>A hand-written rule set checks siren, horn, alarm, knock, and call patterns in priority order; an unusually loud class catches unmatched events.</p></div></li>
+                <li><div><b>Schedule the haptic</b><p>Priority and per-class cooldown decide whether the new alert interrupts, waits, or is dropped. Rhythm and LED colour always agree.</p></div></li>
+              </ol>
+            </div>
+            <div class="position-system" aria-labelledby="rhythm-title">
+              <div class="system-heading"><p class="operation-number">WHY RHYTHM</p><h3 id="rhythm-title">One motor, a vocabulary in time</h3></div>
+              <div class="position-grid rhythm-rationale">
+                <article><p class="position-tag">REJECTED</p><h4>Intensity</h4><p>“Strong” is not a stable signal: perceived amplitude changes with strap tension, wrist size, and arm position.</p></article>
+                <article><p class="position-tag">REJECTED</p><h4>Location</h4><p>Multiple motors add cost, wiring, and volume, while the wrist has relatively coarse two-point discrimination.</p></article>
+                <article><p class="position-tag">SELECTED</p><h4>Rhythm</h4><p>Pulse count and pulse length are easier to distinguish. One motor is enough, and the vocabulary remains configurable in software.</p></article>
+              </div>
+            </div>
+          </section>
+
+          <section id="vocabulary" class="record-section">
+            <h2><span>03.</span> Sound-to-vibration vocabulary</h2>
+            <p class="method-intro">Each category has a unique pulse structure, colour, urgency, and cooldown. Sirens and horns run at full motor duty; other alerts use 85%.</p>
+            <div class="verification-table-wrap" tabindex="0" aria-label="Scrollable sound and vibration pattern table">
+              <table class="verification-table alert-table"><thead><tr><th scope="col">SOUND CLASS</th><th scope="col">LED</th><th scope="col">VIBRATION</th><th scope="col">PRIORITY</th><th scope="col">COOLDOWN</th></tr></thead><tbody>
+                <tr><th scope="row">Door knock / doorbell</th><td><span class="colour-dot cyan"></span>Cyan</td><td>Three quick taps</td><td>20</td><td>4 s</td></tr>
+                <tr><th scope="row">Someone calling you</th><td><span class="colour-dot green"></span>Green</td><td>Short, then long</td><td>40</td><td>4 s</td></tr>
+                <tr><th scope="row">Vehicle horn</th><td><span class="colour-dot amber"></span>Amber</td><td>Long, then two taps</td><td>70</td><td>5 s</td></tr>
+                <tr><th scope="row">Alarm or timer</th><td><span class="colour-dot violet"></span>Violet</td><td>Four even pulses</td><td>50</td><td>6 s</td></tr>
+                <tr><th scope="row">Siren</th><td><span class="colour-dot red"></span>Red</td><td>Three long wails × 3</td><td>90</td><td>10 s</td></tr>
+                <tr><th scope="row">Unusually loud sound</th><td><span class="colour-dot grey"></span>Grey</td><td>One long buzz</td><td>10</td><td>6 s</td></tr>
+              </tbody></table>
+            </div>
+            <div class="detail-grid">
+              <article><p class="operation-number">PRIORITY</p><h3>Urgent events cut through</h3><p>A higher-numbered event interrupts the pattern already playing. A siren can interrupt a doorbell; a doorbell cannot interrupt a siren.</p></article>
+              <article><p class="operation-number">COOLDOWN</p><h3>Repeated sounds stay readable</h3><p>Each class has its own cooldown, preventing a doorbell pressed six times from becoming one continuous and confusing vibration.</p></article>
+              <article><p class="operation-number">CONFIGURABLE</p><h3>Patterns live in software</h3><p>Pulse timing, colour, priority, repeats, and cooldown can be changed over USB serial without rebuilding the firmware.</p></article>
+              <article><p class="operation-number">LEARNING MODE</p><h3>Practice before it matters</h3><p>Holding the button for 1.5 seconds cycles through every class twice, pairing each vibration with its LED colour.</p></article>
+            </div>
+          </section>
+
+          <section id="construction" class="record-section">
+            <h2><span>04.</span> Physical construction</h2>
+            <p class="method-intro">Rev B is a six-part printed enclosure built to stay reopenable, protect the LiPo cell, carry a standard strap, and print without support.</p>
+            <ol class="structure-stack">
+              <li><b>Caseback floor</b><p>A 1.2 mm solid wrist-facing layer is the only material between the vibration motor and the wearer’s skin.</p></li>
+              <li><b>Cell + motor pockets</b><p>A protected 502030 LiPo sits in its own bay. A 10 × 2.7 mm coin motor sits beside it on a pad raised 0.4 mm toward the skin.</p></li>
+              <li><b>Air gap</b><p>A verified 0.4 mm gap remains above the cell, preventing the enclosure from compressing it when closed.</p></li>
+              <li><b>Carrier board</b><p>A 47 × 28 mm perfboard rests on two moulded ribs at 7.2–8.8 mm above the wrist face.</p></li>
+              <li><b>Electronics headroom</b><p>The MCU, microphone, tactile switch, and RGB LED occupy 4.6 mm above the carrier board.</p></li>
+              <li><b>Top wall</b><p>The 2.0 mm cover carries the microphone port, flexible TPU button pad, and clear PETG light pipe.</p></li>
+            </ol>
+            <div class="engineering-notes" aria-label="Construction details">
+              <article><p class="operation-number">ACOUSTIC PATH</p><h3>Sealed path to the microphone</h3><p>A 1.8 mm top port, recessed 5 mm mesh disc, 4.0 mm moulded bore, and compressed silicone ring guide sound onto the bottom-ported microphone face.</p></article>
+              <article><p class="operation-number">SERVICEABILITY</p><h3>Four screws from the wrist side</h3><p>Four M2 screws pass through caseback counterbores into bosses on the main shell, allowing the case to be reopened with an ordinary screwdriver.</p></article>
+              <article><p class="operation-number">SUPPORT-FREE PRINT</p><h3>Flat faces become build plates</h3><p>The main case prints top-face down and the caseback prints wrist-face down. Internal bosses, ribs, duct, and lugs grow upward without unsupported geometry.</p></article>
+            </div>
+          </section>
+
+          <section id="self-noise" class="record-section">
+            <h2><span>05.</span> Preventing false alerts</h2>
+            <p class="lead-copy">The hardest engineering problem is that a microphone and vibration motor share one small enclosure. If the wristband classified its own motor noise, it could create a false alert loop.</p>
+            <div class="detail-grid">
+              <article><p class="operation-number">01 / DISTANCE</p><h3>Opposite ends of the case</h3><p>The microphone and motor are 29.9 mm apart and diagonally opposed in plan view.</p></article>
+              <article><p class="operation-number">02 / ISOLATION</p><h3>No direct rigid path</h3><p>The motor bonds to the caseback while the microphone rides on a 1.0 mm silicone pad on the rib-supported board.</p></article>
+              <article><p class="operation-number">03 / FIRMWARE</p><h3>Classifier blanking</h3><p>Recognition pauses from 30 ms before the first haptic pulse until 120 ms after the last. Any event already open is abandoned rather than contaminated by motor noise.</p></article>
+              <article><p class="operation-number">TRADEOFF</p><h3>Deaf while buzzing</h3><p>The device cannot recognize new sounds during an alert. A three-repeat siren pattern leaves it unable to listen for roughly seven seconds.</p></article>
+            </div>
+          </section>
+
+          <section id="electronics" class="record-section">
+            <h2><span>06.</span> Electronics, controls, and power</h2>
+            <p class="method-intro">The planned prototype uses off-the-shelf development modules on perfboard, so a working unit can be assembled without a custom PCB.</p>
+            <dl class="route-list">
+              <div><dt>MCU</dt><dd>Seeed Studio XIAO ESP32-C3, 21 × 17.5 mm, with USB-C and LiPo charging on board.</dd></div>
+              <div><dt>MICROPHONE</dt><dd>Adafruit 3421 / SPH0645LM4H digital I²S microphone, 16.7 × 12.7 × 1.8 mm, bottom ported.</dd></div>
+              <div><dt>MOTOR</dt><dd>Adafruit 1201 coin ERM, 10 × 2.7 mm, approximately 60 mA at 3 V.</dd></div>
+              <div><dt>DRIVER</dt><dd>Discrete N-channel MOSFET, flyback diode, gate pull-down, and a 100 µF capacitor beside the motor.</dd></div>
+              <div><dt>CELL</dt><dd>Protected 502030 LiPo, approximately 250 mAh, housed in a dedicated pocket.</dd></div>
+              <div><dt>CONTROLS</dt><dd>One 6 × 6 × 4.3 mm tactile switch and one 3 mm through-hole RGB LED.</dd></div>
+            </dl>
+            <div class="record-format" aria-label="Button controls">
+              <p class="operation-number">ONE BUTTON / FIVE ACTIONS</p>
+              <div class="gesture-list">
+                <span><b>PRESS DURING ALERT</b>Acknowledge and stop the motor</span><span><b>SINGLE PRESS</b>Mute or unmute alerts</span>
+                <span><b>DOUBLE PRESS</b>Cycle low / medium / high sensitivity</span><span><b>HOLD 1.5 S</b>Enter learning mode</span><span><b>HOLD 5 S</b>Enter deep sleep</span>
+              </div>
+            </div>
+            <dl class="performance-strip" aria-label="Estimated battery runtime"><div><dt>10 mA</dt><dd>~21 h estimated</dd></div><div><dt>20 mA</dt><dd>~10.5 h estimated</dd></div><div><dt>30 mA</dt><dd>~7 h estimated</dd></div><div><dt>40 mA</dt><dd>~5.3 h estimated</dd></div></dl>
+            <aside class="system-boundary"><p class="operation-number">POWER REALITY</p><p>Battery life is modelled, not measured. With continuous I²S capture and FFT processing on the ESP32-C3, the likely region is 25–40 mA: an honest charge-every-night prototype. A lower-power MCU is a future product decision.</p></aside>
+          </section>
+
+          <section id="privacy" class="record-section">
+            <h2><span>07.</span> Privacy by operation</h2>
+            <p class="method-intro">The intended firmware uses the microphone as a sensor, not a recorder. Processing remains on the device.</p>
+            <div class="privacy-ledger">
+              <div><span>01</span><p><b>Audio stays in RAM.</b> Frames are analysed in a ring buffer and continuously overwritten; audio is never written to flash.</p></div>
+              <div><span>02</span><p><b>Events are not archived.</b> A recognized class label is used immediately to schedule an alert, then discarded.</p></div>
+              <div><span>03</span><p><b>Radios stay off.</b> Wi-Fi and Bluetooth are disabled at startup; there is no pairing or network connection.</p></div>
+              <div><span>04</span><p><b>USB is the only output.</b> Human-readable diagnostic logs leave the device only while a cable is connected.</p></div>
+            </div>
+            <p class="small-print">These are properties of the planned firmware, not guarantees enforced by hardware. Reflashing different firmware could change them, and using any always-listening device around other people still carries a social responsibility.</p>
+          </section>
+        </article>
+
+        <aside class="spec-panel" aria-labelledby="spec-title"><div class="panel-title" id="spec-title">PROJECT DATA</div><dl>
+          <div><dt>NAME</dt><dd>Sense Clip</dd></div><div><dt>TYPE</dt><dd>Assistive wearable</dd></div><div><dt>STATUS</dt><dd>Prototype — not yet built</dd></div><div><dt>REVISION</dt><dd>Rev B</dd></div>
+          <div><dt>CASE</dt><dd>53 × 33 × 15.4 mm</dd></div><div><dt>STRAP</dt><dd>20 mm standard</dd></div><div><dt>SAMPLING</dt><dd>16 kHz digital I²S</dd></div><div><dt>ANALYSIS</dt><dd>256-point FFT / 10 ms</dd></div>
+          <div><dt>OUTPUT</dt><dd>ERM motor + RGB LED</dd></div><div><dt>CLASSES</dt><dd>6 sound categories</dd></div><div><dt>CELL</dt><dd>~250 mAh protected LiPo</dd></div><div><dt>NETWORK</dt><dd>Wi-Fi / Bluetooth off</dd></div><div><dt>BUILD</dt><dd>Off-the-shelf modules</dd></div><div><dt>NEXT</dt><dd>Physical testing</dd></div>
+        </dl></aside>
+      </div>
+
+      <section id="verification" class="verification-section" aria-labelledby="verification-title">
+        <div class="section-banner"><div><p class="terminal-label">[ CAD + FIRMWARE CHECKS ]</p><h2 id="verification-title">What is verified</h2></div><p>REV B / DIGITAL PROTOTYPE</p></div>
+        <div class="verification-table-wrap" tabindex="0" aria-label="Scrollable engineering verification table">
+          <table class="verification-table"><thead><tr><th scope="col">CHECK</th><th scope="col">RESULT</th><th scope="col">WHAT IT MEANS</th><th scope="col">STATUS</th></tr></thead><tbody>
+            <tr><th scope="row">Solid-body interference</th><td>0 overlapping part pairs</td><td>No CAD bodies intersect in either revision</td><td>PASS</td></tr>
+            <tr><th scope="row">Cell protection</th><td>1.2 mm floor / 0.4 mm air above</td><td>The closed case does not compress the cell</td><td>PASS</td></tr>
+            <tr><th scope="row">Nearest screw axis</th><td>4.46 mm from cell envelope</td><td>Fasteners remain clear of the battery volume</td><td>PASS</td></tr>
+            <tr><th scope="row">Printed geometry</th><td>Watertight, winding-consistent meshes</td><td>All parts export as valid closed meshes</td><td>PASS</td></tr>
+            <tr><th scope="row">Minimum wall</th><td>1.2 mm at 1st percentile</td><td>Matches the design minimum for a 0.4 mm nozzle</td><td>PASS</td></tr>
+            <tr><th scope="row">Firmware core</th><td>Compiles with warnings as errors</td><td>28 behavioural checks complete with 0 failures</td><td>PASS</td></tr>
+            <tr><th scope="row">Synthetic scenes</th><td>8 of 8 pipeline checks</td><td>Self-consistent logic only—not real-world accuracy</td><td>SIMULATED</td></tr>
+          </tbody></table>
+        </div>
+        <div class="tradeoff-grid limitation-grid">
+          <article><p class="operation-number">KNOWN LIMITATION 01</p><p>A two-tone door chime currently falls through to the “unusually loud” pattern. The wearer is alerted, but with the wrong class.</p></article>
+          <article><p class="operation-number">KNOWN LIMITATION 02</p><p>Speech is not distinguished from someone calling the wearer, so normal conversation can trigger the call class.</p></article>
+          <article><p class="operation-number">KNOWN LIMITATION 03</p><p>Simultaneous events produce one alert; the higher-priority class wins.</p></article>
+        </div>
+        <div class="open-questions"><p class="operation-number">NEXT TESTS / OPEN QUESTIONS</p><ol>
+          <li><span>T-01</span><b>Battery charge current</b><p>Measure the board’s charge current before the first cell is connected.</p></li>
+          <li><span>T-08</span><b>Self-vibration rejection</b><p>Confirm that a real enclosure does not classify its own motor as a new event.</p></li>
+          <li><span>T-09</span><b>Rhythm distinction</b><p>Test whether six patterns are distinguishable on real wrists with at least six participants.</p></li>
+        </ol></div>
+        <aside class="prototype-disclaimer"><p class="operation-number">PROTOTYPE BOUNDARY</p><p>No physical unit or user study exists yet, and no real-world recognition accuracy has been measured. Sense Clip is not a certified alarm or medical device, has no water-resistance rating, and is not a replacement for a smoke alarm, fire alarm, CO detector, or medical alert device.</p></aside>
       </section>
-      <section class="project-story">
-        <h2>Overview</h2>
-        <div class="story-copy"><p>The wrist band analyzes incoming sound waves to identify possible vehicles and alarms.</p><p>When a warning sound is detected, vibration gives people with hearing difficulties an immediate physical alert that can help them stay aware and avoid danger.</p></div>
+
+      <section id="drawings" class="drawing-section" aria-labelledby="drawings-title">
+        <div class="section-banner"><div><p class="terminal-label">[ DESIGN DOCUMENTATION ]</p><h2 id="drawings-title">Prototype views</h2></div><p>02 FILES / CAD CAPTURES</p></div>
+        <div class="drawing-grid wristband-drawing-grid">
+          <figure class="drawing-card"><div class="window-bar"><span>VIEW_A / INTERNAL STACK</span><span>001</span></div><a href="assets/wristband/sense-clip-top-assembly.png" target="_blank" rel="noreferrer"><img src="assets/wristband/sense-clip-top-assembly.png" alt="Top perspective CAD view showing the internal arrangement of the Sense Clip enclosure" width="1103" height="606" loading="lazy" /></a><figcaption>FIG. 02 — INTERNAL ASSEMBLY <span>CLICK IMAGE TO OPEN</span></figcaption></figure>
+          <figure class="drawing-card"><div class="window-bar"><span>VIEW_B / CASEBACK</span><span>002</span></div><a href="assets/wristband/sense-clip-caseback.png" target="_blank" rel="noreferrer"><img src="assets/wristband/sense-clip-caseback.png" alt="CAD view of the Sense Clip caseback with strap lugs, screw counterbores, and side opening" width="1230" height="649" loading="lazy" /></a><figcaption>FIG. 03 — WRIST-FACING CASEBACK <span>CLICK IMAGE TO OPEN</span></figcaption></figure>
+        </div>
       </section>
-      <a class="next-project" href="drone.html"><span>Next project</span><span>Drone →</span></a>
+
+      <section id="video" class="prototype-video-section" aria-labelledby="video-title">
+        <div class="video-frame"><div class="window-bar"><span>SENSE_CLIP_PROTOTYPE_DEMO.MP4</span><span>NOT YET RECORDED</span></div>
+          <div class="video-placeholder"><span class="video-play" aria-hidden="true">▶</span><p class="terminal-label">[ PHYSICAL PROTOTYPE VIDEO ]</p><h2 id="video-title">Coming soon</h2><p>The demo will be added after the first physical build, bench verification, and on-wrist rhythm testing.</p></div>
+          <div class="video-status"><span>BUILD → VERIFY → TEST → FILM</span><span>STATUS: PENDING</span></div>
+        </div>
+      </section>
+      <nav class="project-switcher" aria-label="Project navigation"><a href="index.html#projects">← PROJECT INDEX</a><a href="drone.html">NEXT FILE: WI-FI DRONE →</a></nav>
     </main>
-    <footer><p>© <span id="year">2026</span> Son Borey Norint</p><div><a href="index.html#projects">All projects</a><a href="#top">Back to top ↑</a></div></footer>
+    <footer class="drone-footer"><div class="drone-shell"><p>© <span id="year">2026</span> SON BOREY NORINT</p><p><a href="#top">BACK TO TOP ↑</a></p></div></footer>
   </body>
 </html>
