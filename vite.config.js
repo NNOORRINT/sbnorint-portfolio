@@ -7,7 +7,7 @@ export default defineConfig({
       input: {
         portfolio: resolve(__dirname, "index.html"),
         emath: resolve(__dirname, "emath.html"),
-        khmerArchive: resolve(__dirname, "khmer-archive.html"),
+        lumhat: resolve(__dirname, "lumhat.html"),
         current: resolve(__dirname, "current.html"),
         wristBand: resolve(__dirname, "wrist-band.html"),
         drone: resolve(__dirname, "drone.html"),

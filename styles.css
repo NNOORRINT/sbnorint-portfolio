@@ -906,6 +906,47 @@ footer div { display: flex; gap: 24px; }
 .drone-footer p { margin: 0; font-family: "SFMono-Regular", Menlo, Monaco, Consolas, monospace; font-size: 10px; }
 .drone-footer a { color: var(--drone-cyan); }
 
+/* Lumhat: a minimal picture gallery using the drone archive visual system. */
+.lumhat-page {
+  --drone-blue: #2059d5;
+  --drone-cyan: #cbdcff;
+  --drone-accent: #2059d5;
+}
+.lumhat-title {
+  padding: 46px 0 42px;
+  border-bottom: 3px double var(--drone-ink);
+}
+.lumhat-title h1 {
+  margin-bottom: 26px;
+  text-transform: none;
+}
+.lumhat-description {
+  width: min(680px, 100%);
+  min-height: 54px;
+  border-top: 1px solid var(--drone-rule);
+  border-bottom: 1px solid var(--drone-rule);
+}
+.lumhat-gallery { padding: 44px 0 64px; }
+.lumhat-gallery-grid { display: grid; gap: 30px; }
+.lumhat-gallery-card { box-shadow: 7px 7px 0 #c8c7c1; }
+.lumhat-gallery-card a { background: #e8e8e4; }
+.lumhat-gallery-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: brightness(0.98) saturate(0.92) contrast(0.99);
+  transition: filter 120ms ease;
+}
+.lumhat-gallery-card a:hover img { filter: none; }
+.lumhat-gallery-card figcaption { min-height: 50px; }
+
+@media (max-width: 560px) {
+  .lumhat-title { padding: 32px 0 30px; }
+  .lumhat-gallery { padding: 34px 0 50px; }
+  .lumhat-gallery-grid { gap: 22px; }
+  .lumhat-gallery-card figcaption { min-height: 42px; }
+}
+
 /* Sense Clip: uses the same technical archive system as the drone case study. */
 .wristband-page {
   --drone-blue: #345951;
@@ -1457,4 +1498,9 @@ footer div { display: flex; gap: 24px; }
   .project-page.archive-page .project-facts div { border-right: 0; border-bottom: 1px dotted var(--archive-rule); }
   .project-page.archive-page .project-facts div:last-child { border-bottom: 0; }
   .archive-page > footer { align-items: flex-start; flex-direction: column; justify-content: center; gap: 6px; }
+}
+
+/* Keep Lumhat screenshots at their natural ratio after shared mobile rules. */
+@media (max-width: 560px) {
+  .lumhat-gallery-card img { height: auto; }
 }
