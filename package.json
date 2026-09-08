@@ -5,7 +5,8 @@
   "description": "Local live preview for the portfolio website",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 8080 --open /index.html",
-    "build": "vite build"
+    "build": "vite build",
+    "postbuild": "node scripts/copy-static-assets.mjs"
   },
   "devDependencies": {
     "vite": "^7.1.3"
