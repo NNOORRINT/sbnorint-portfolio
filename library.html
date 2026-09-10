@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Browse and download PDF notes, problem sets, solutions, and other learning resources shared by Son Borey Norint." />
+    <title>PDF Library — Son Borey Norint</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="script.js"></script>
+    <script type="module" src="library.js"></script>
+  </head>
+  <body class="archive-page library-page">
+    <a class="skip-link" href="#library-content">Skip to PDF library</a>
+
+    <header class="site-header">
+      <a class="name" href="index.html">Son Borey Norint</a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="library.html" aria-current="page">Library</a>
+        <a href="index.html#about">About</a>
+      </nav>
+    </header>
+
+    <main id="library-content">
+      <section class="library-hero" aria-labelledby="library-title">
+        <div>
+          <p class="label">Public resource portal</p>
+          <h1 id="library-title">PDF Library</h1>
+        </div>
+        <div class="library-intro">
+          <p>Notes, problem sets, solutions, books, and useful documents—organized in one searchable archive.</p>
+          <p class="library-total"><strong id="document-total">0</strong> <span>files available</span></p>
+        </div>
+      </section>
+
+      <section class="library-browser" aria-labelledby="browse-title">
+        <div class="library-window-bar">
+          <span id="browse-title">DOCUMENT_INDEX.HTML</span>
+          <span>PUBLIC ACCESS / PDF</span>
+        </div>
+
+        <div class="library-controls">
+          <label class="search-control">
+            <span>Search the archive</span>
+            <span class="search-input-wrap">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z" /></svg>
+              <input id="library-search" type="search" placeholder="Title, topic, or description…" autocomplete="off" />
+            </span>
+          </label>
+
+          <label>
+            <span>Category</span>
+            <select id="library-category">
+              <option value="all">All categories</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Sort by</span>
+            <select id="library-sort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title">Title A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="library-results-heading">
+          <p id="library-status" role="status" aria-live="polite">Loading documents…</p>
+          <button id="clear-filters" class="clear-filters" type="button" hidden>Clear filters</button>
+        </div>
+
+        <div id="document-list" class="document-list" aria-live="polite"></div>
+
+        <div id="library-empty" class="library-empty" hidden>
+          <span class="empty-file-icon" aria-hidden="true">PDF</span>
+          <div>
+            <p class="label" id="empty-label">Archive ready</p>
+            <h2 id="empty-title">Documents are being prepared.</h2>
+            <p id="empty-copy">PDFs will appear here as soon as they are published. Please check back soon.</p>
+          </div>
+        </div>
+
+        <nav id="library-pagination" class="library-pagination" aria-label="PDF library pages" hidden>
+          <button id="previous-page" type="button">← Previous</button>
+          <p id="page-status">Page 1 of 1</p>
+          <button id="next-page" type="button">Next →</button>
+        </nav>
+      </section>
+
+      <aside class="library-note">
+        <p class="label">A note about the files</p>
+        <p>These resources are shared for learning. Please respect the original authors and any copyright notices included in each document.</p>
+      </aside>
+    </main>
+
+    <footer>
+      <p>© <span id="year">2026</span> Son Borey Norint</p>
+      <div><a href="index.html">Portfolio</a><a href="#library-content">Back to top ↑</a></div>
+    </footer>
+  </body>
+</html>

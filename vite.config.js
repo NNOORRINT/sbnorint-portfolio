@@ -12,6 +12,7 @@ export default defineConfig({
         current: resolve(__dirname, "current.html"),
         wristBand: resolve(__dirname, "wrist-band.html"),
         drone: resolve(__dirname, "drone.html"),
+        library: resolve(__dirname, "library.html"),
       },
     },
   },
