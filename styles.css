@@ -1506,7 +1506,7 @@ footer div { display: flex; gap: 24px; }
 }
 
 /* Public PDF library */
-.library-page main::before { content: "PUBLIC DOCUMENT ARCHIVE / PDF FILES"; }
+.library-page main::before { content: "PUBLIC CREDENTIAL ARCHIVE / RÉSUMÉ EVIDENCE"; }
 .library-page .site-header nav a[aria-current="page"] {
   background: var(--archive-ink);
   color: #fff;
@@ -1657,6 +1657,13 @@ footer div { display: flex; gap: 24px; }
 }
 .document-card:last-child { border-bottom: 0; }
 .document-card.is-featured { background: #edf1f3; }
+.document-card.is-linked {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #6f94c2;
+  outline-offset: -3px;
+  background: #edf1f3;
+}
 .document-number {
   align-self: start;
   color: #85898b;
@@ -1720,6 +1727,8 @@ footer div { display: flex; gap: 24px; }
   font-size: 13px;
   line-height: 1.5;
 }
+.document-copy .credential-issuer { color: var(--archive-ink); }
+.document-copy .credential-issuer strong { font-weight: 720; }
 .document-copy .document-meta {
   margin: 10px 0 0;
   color: #777d80;

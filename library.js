@@ -2,7 +2,7 @@ const PAGE_SIZE = 18;
 
 const elements = {
   search: document.querySelector("#library-search"),
-  category: document.querySelector("#library-category"),
+  issuer: document.querySelector("#library-category"),
   sort: document.querySelector("#library-sort"),
   list: document.querySelector("#document-list"),
   total: document.querySelector("#document-total"),
@@ -18,7 +18,7 @@ const elements = {
   pageStatus: document.querySelector("#page-status"),
 };
 
-let documents = [];
+let credentials = [];
 let currentPage = 1;
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
@@ -29,48 +29,59 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (character
   '"': "&quot;",
 })[character]);
 
-const normaliseDocument = (document, index) => ({
-  id: String(document.id || `pdf-${index + 1}`),
-  title: String(document.title || "Untitled document"),
-  description: String(document.description || "PDF document"),
-  category: String(document.category || "Other"),
-  year: Number(document.year) || new Date().getFullYear(),
-  pages: document.pages ? String(document.pages) : "",
-  size: document.size ? String(document.size) : "",
-  file: String(document.file || ""),
-  featured: Boolean(document.featured),
+const safeUrl = (value) => {
+  const url = String(value || "").trim();
+  return /^(https:\/\/|assets\/pdfs\/)[^\s]+$/i.test(url) ? url : "";
+};
+
+const normaliseCredential = (credential, index) => ({
+  id: String(credential.id || `credential-${index + 1}`).replace(/[^a-z0-9_-]/gi, "-"),
+  title: String(credential.title || "Untitled credential"),
+  description: String(credential.description || "Certificate of achievement"),
+  issuer: String(credential.issuer || "Issuer not listed"),
+  type: String(credential.type || "Certificate"),
+  issued: String(credential.issued || credential.year || ""),
+  year: Number(credential.year) || new Date().getFullYear(),
+  credentialId: String(credential.credentialId || ""),
+  file: safeUrl(credential.file),
+  verificationUrl: safeUrl(credential.verificationUrl),
+  featured: Boolean(credential.featured),
 });
 
-const makeDocumentCard = (document, index) => {
+const makeCredentialCard = (credential, index) => {
   const number = String(index + 1).padStart(3, "0");
-  const metadata = [document.year, document.pages && `${document.pages} pages`, document.size].filter(Boolean);
-  const safeFile = escapeHtml(document.file);
+  const metadata = [credential.issued && `Issued ${credential.issued}`, credential.credentialId && `ID ${credential.credentialId}`].filter(Boolean);
+  const verificationLink = credential.verificationUrl
+    ? `<a href="${escapeHtml(credential.verificationUrl)}" target="_blank" rel="noreferrer">Verify <span aria-hidden="true">↗</span></a>`
+    : "";
 
   return `
-    <article class="document-card${document.featured ? " is-featured" : ""}">
+    <article class="document-card${credential.featured ? " is-featured" : ""}" id="${escapeHtml(credential.id)}">
       <div class="document-number" aria-hidden="true">${number}</div>
-      <div class="document-icon" aria-hidden="true"><span>PDF</span></div>
+      <div class="document-icon" aria-hidden="true"><span>CERT</span></div>
       <div class="document-copy">
-        <p class="document-category">${escapeHtml(document.category)}${document.featured ? " / Featured" : ""}</p>
-        <h2>${escapeHtml(document.title)}</h2>
-        <p>${escapeHtml(document.description)}</p>
+        <p class="document-category">${escapeHtml(credential.type)}${credential.featured ? " / Featured" : ""}</p>
+        <h2>${escapeHtml(credential.title)}</h2>
+        <p class="credential-issuer">Issued by <strong>${escapeHtml(credential.issuer)}</strong></p>
+        <p>${escapeHtml(credential.description)}</p>
         <p class="document-meta">${metadata.map(escapeHtml).join(" <span aria-hidden=\"true\">·</span> ")}</p>
       </div>
       <div class="document-actions">
-        <a href="${safeFile}" target="_blank" rel="noreferrer">Preview <span aria-hidden="true">↗</span></a>
-        <a class="download-button" href="${safeFile}" download>Download <span aria-hidden="true">↓</span></a>
+        <a href="${escapeHtml(credential.file)}" target="_blank" rel="noreferrer">View PDF <span aria-hidden="true">↗</span></a>
+        ${verificationLink}
+        <a class="download-button" href="${escapeHtml(credential.file)}" download>Download <span aria-hidden="true">↓</span></a>
       </div>
     </article>`;
 };
 
-const getFilteredDocuments = () => {
+const getFilteredCredentials = () => {
   const query = elements.search.value.trim().toLocaleLowerCase();
-  const category = elements.category.value;
+  const issuer = elements.issuer.value;
   const sort = elements.sort.value;
 
-  const filtered = documents.filter((document) => {
-    const searchableText = `${document.title} ${document.description} ${document.category}`.toLocaleLowerCase();
-    return (!query || searchableText.includes(query)) && (category === "all" || document.category === category);
+  const filtered = credentials.filter((credential) => {
+    const searchableText = `${credential.title} ${credential.description} ${credential.issuer} ${credential.type} ${credential.credentialId}`.toLocaleLowerCase();
+    return (!query || searchableText.includes(query)) && (issuer === "all" || credential.issuer === issuer);
   });
 
   return filtered.sort((a, b) => {
@@ -80,29 +91,42 @@ const getFilteredDocuments = () => {
   });
 };
 
+const focusLinkedCredential = () => {
+  if (!window.location.hash) return;
+  const linkedCredential = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+  if (!linkedCredential) return;
+  linkedCredential.classList.add("is-linked");
+  linkedCredential.scrollIntoView({ block: "center" });
+  linkedCredential.setAttribute("tabindex", "-1");
+  linkedCredential.focus({ preventScroll: true });
+};
+
 const render = () => {
-  const filtered = getFilteredDocuments();
+  const filtered = getFilteredCredentials();
+  const filtersActive = Boolean(elements.search.value.trim()) || elements.issuer.value !== "all";
+  const linkedId = decodeURIComponent(window.location.hash.slice(1));
+  const linkedIndex = filtersActive ? -1 : filtered.findIndex((credential) => credential.id === linkedId);
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  if (linkedIndex >= 0) currentPage = Math.floor(linkedIndex / PAGE_SIZE) + 1;
   currentPage = Math.min(currentPage, pageCount);
   const start = (currentPage - 1) * PAGE_SIZE;
-  const pageDocuments = filtered.slice(start, start + PAGE_SIZE);
-  const filtersActive = Boolean(elements.search.value.trim()) || elements.category.value !== "all";
+  const pageCredentials = filtered.slice(start, start + PAGE_SIZE);
 
-  elements.list.innerHTML = pageDocuments.map((document, index) => makeDocumentCard(document, start + index)).join("");
-  elements.list.hidden = pageDocuments.length === 0;
+  elements.list.innerHTML = pageCredentials.map((credential, index) => makeCredentialCard(credential, start + index)).join("");
+  elements.list.hidden = pageCredentials.length === 0;
   elements.clear.hidden = !filtersActive;
-  elements.status.textContent = `${filtered.length} ${filtered.length === 1 ? "document" : "documents"}${filtersActive ? " found" : " in the archive"}`;
+  elements.status.textContent = `${filtered.length} ${filtered.length === 1 ? "credential" : "credentials"}${filtersActive ? " found" : " published"}`;
 
-  if (pageDocuments.length === 0) {
+  if (pageCredentials.length === 0) {
     elements.empty.hidden = false;
-    if (documents.length === 0) {
+    if (credentials.length === 0) {
       elements.emptyLabel.textContent = "Archive ready";
-      elements.emptyTitle.textContent = "Documents are being prepared.";
-      elements.emptyCopy.textContent = "PDFs will appear here as soon as they are published. Please check back soon.";
+      elements.emptyTitle.textContent = "Certificates are being prepared.";
+      elements.emptyCopy.textContent = "Verified credentials will appear here as soon as they are published.";
     } else {
       elements.emptyLabel.textContent = "No matches";
-      elements.emptyTitle.textContent = "No documents match those filters.";
-      elements.emptyCopy.textContent = "Try a different search term or clear the filters to see the full archive.";
+      elements.emptyTitle.textContent = "No credentials match those filters.";
+      elements.emptyCopy.textContent = "Try a different search term or clear the filters to see every credential.";
     }
   } else {
     elements.empty.hidden = true;
@@ -112,31 +136,32 @@ const render = () => {
   elements.pageStatus.textContent = `Page ${currentPage} of ${pageCount}`;
   elements.previous.disabled = currentPage === 1;
   elements.next.disabled = currentPage === pageCount;
+  focusLinkedCredential();
 };
 
-const loadLibrary = async () => {
+const loadCredentials = async () => {
   try {
     const response = await fetch("assets/pdfs/library.json");
-    if (!response.ok) throw new Error("The PDF catalog could not be loaded.");
+    if (!response.ok) throw new Error("The credential catalog could not be loaded.");
     const data = await response.json();
-    documents = (Array.isArray(data) ? data : data.documents || [])
-      .map(normaliseDocument)
-      .filter((document) => document.file.toLocaleLowerCase().endsWith(".pdf") || /^https?:\/\//i.test(document.file));
+    credentials = (Array.isArray(data) ? data : data.credentials || data.documents || [])
+      .map(normaliseCredential)
+      .filter((credential) => credential.file);
 
-    elements.total.textContent = String(documents.length);
-    const categories = [...new Set(documents.map((document) => document.category))].sort((a, b) => a.localeCompare(b));
-    elements.category.insertAdjacentHTML("beforeend", categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`).join(""));
+    elements.total.textContent = String(credentials.length);
+    const issuers = [...new Set(credentials.map((credential) => credential.issuer))].sort((a, b) => a.localeCompare(b));
+    elements.issuer.insertAdjacentHTML("beforeend", issuers.map((issuer) => `<option value="${escapeHtml(issuer)}">${escapeHtml(issuer)}</option>`).join(""));
     render();
   } catch (error) {
-    elements.status.textContent = "The archive is temporarily unavailable.";
+    elements.status.textContent = "The credential archive is temporarily unavailable.";
     elements.empty.hidden = false;
     elements.emptyLabel.textContent = "Load error";
-    elements.emptyTitle.textContent = "The library could not be opened.";
+    elements.emptyTitle.textContent = "The certificates could not be opened.";
     elements.emptyCopy.textContent = "Please refresh the page or try again later.";
   }
 };
 
-[elements.search, elements.category, elements.sort].forEach((control) => {
+[elements.search, elements.issuer, elements.sort].forEach((control) => {
   control.addEventListener("input", () => {
     currentPage = 1;
     render();
@@ -145,7 +170,7 @@ const loadLibrary = async () => {
 
 elements.clear.addEventListener("click", () => {
   elements.search.value = "";
-  elements.category.value = "all";
+  elements.issuer.value = "all";
   currentPage = 1;
   render();
   elements.search.focus();
@@ -163,4 +188,5 @@ elements.next.addEventListener("click", () => {
   document.querySelector(".library-browser").scrollIntoView({ behavior: "smooth" });
 });
 
-loadLibrary();
+window.addEventListener("hashchange", focusLinkedCredential);
+loadCredentials();

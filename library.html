@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Browse and download PDF notes, problem sets, solutions, and other learning resources shared by Son Borey Norint." />
-    <title>PDF Library — Son Borey Norint</title>
+    <meta name="description" content="View and verify the certificates, awards, courses, and academic credentials of Son Borey Norint." />
+    <title>Certificates & Credentials — Son Borey Norint</title>
     <link rel="stylesheet" href="styles.css" />
     <script type="module" src="script.js"></script>
     <script type="module" src="library.js"></script>
   </head>
   <body class="archive-page library-page">
-    <a class="skip-link" href="#library-content">Skip to PDF library</a>
+    <a class="skip-link" href="#library-content">Skip to certificates</a>
 
     <header class="site-header">
       <a class="name" href="index.html">Son Borey Norint</a>
       <nav aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="index.html#projects">Projects</a>
-        <a href="library.html" aria-current="page">Library</a>
+        <a href="library.html" aria-current="page">Certificates</a>
         <a href="index.html#about">About</a>
       </nav>
     </header>
@@ -25,34 +25,34 @@
     <main id="library-content">
       <section class="library-hero" aria-labelledby="library-title">
         <div>
-          <p class="label">Public resource portal</p>
-          <h1 id="library-title">PDF Library</h1>
+          <p class="label">Résumé supporting documents</p>
+          <h1 id="library-title">Certificates & Credentials</h1>
         </div>
         <div class="library-intro">
-          <p>Notes, problem sets, solutions, books, and useful documents—organized in one searchable archive.</p>
-          <p class="library-total"><strong id="document-total">0</strong> <span>files available</span></p>
+          <p>A public record of academic programs, competitions, courses, awards, and other verified achievements.</p>
+          <p class="library-total"><strong id="document-total">0</strong> <span>credentials published</span></p>
         </div>
       </section>
 
       <section class="library-browser" aria-labelledby="browse-title">
         <div class="library-window-bar">
-          <span id="browse-title">DOCUMENT_INDEX.HTML</span>
-          <span>PUBLIC ACCESS / PDF</span>
+          <span id="browse-title">CREDENTIAL_INDEX.HTML</span>
+          <span>PUBLIC RECORD / PDF</span>
         </div>
 
         <div class="library-controls">
           <label class="search-control">
-            <span>Search the archive</span>
+            <span>Search credentials</span>
             <span class="search-input-wrap">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2A7.5 7.5 0 1 1 4 11.5a7.5 7.5 0 0 1 15 0Z" /></svg>
-              <input id="library-search" type="search" placeholder="Title, topic, or description…" autocomplete="off" />
+              <input id="library-search" type="search" placeholder="Certificate, issuer, or skill…" autocomplete="off" />
             </span>
           </label>
 
           <label>
-            <span>Category</span>
+            <span>Issuer</span>
             <select id="library-category">
-              <option value="all">All categories</option>
+              <option value="all">All issuers</option>
             </select>
           </label>
 
@@ -74,11 +74,11 @@
         <div id="document-list" class="document-list" aria-live="polite"></div>
 
         <div id="library-empty" class="library-empty" hidden>
-          <span class="empty-file-icon" aria-hidden="true">PDF</span>
+          <span class="empty-file-icon" aria-hidden="true">CERT</span>
           <div>
             <p class="label" id="empty-label">Archive ready</p>
-            <h2 id="empty-title">Documents are being prepared.</h2>
-            <p id="empty-copy">PDFs will appear here as soon as they are published. Please check back soon.</p>
+            <h2 id="empty-title">Certificates are being prepared.</h2>
+            <p id="empty-copy">Verified credentials will appear here as soon as they are published.</p>
           </div>
         </div>
 
@@ -90,8 +90,8 @@
       </section>
 
       <aside class="library-note">
-        <p class="label">A note about the files</p>
-        <p>These resources are shared for learning. Please respect the original authors and any copyright notices included in each document.</p>
+        <p class="label">Verification note</p>
+        <p>Each entry identifies the issuing organization and date. When an official verification page is available, it is linked beside the certificate PDF.</p>
       </aside>
     </main>
 
