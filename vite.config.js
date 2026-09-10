@@ -2,7 +2,7 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: "/sbnorint-portfolio/",
+  base: "./",
   build: {
     rollupOptions: {
       input: {
