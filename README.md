@@ -40,6 +40,5 @@ Each project also has its own detail page. Add the complete collection of photos
 to the `.evidence-grid` on the matching page; unlike the home-page preview, this
 gallery does not limit the number of images.
 
-The E-Math page uses an alternating image-and-text case-study layout. Its six
-image filenames and their required order are documented in
+
 `assets/emath/README.md`.
