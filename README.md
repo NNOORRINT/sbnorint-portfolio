@@ -14,7 +14,7 @@ npm run dev
 Open <http://127.0.0.1:8080/>. Changes to the HTML, CSS, JavaScript, and assets
 reload automatically in the browser.
 
-Before publishing, replace the placeholder email, GitHub URL, résumé link, project copy, and `#` project links in `index.html` with your real details.
+When you update the portfolio, keep the introduction, contact email, GitHub profile link, résumé PDF, and project descriptions in `index.html` current.
 
 ## Project evidence photos
 
